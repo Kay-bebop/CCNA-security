@@ -1,0 +1,36 @@
+R1:
+int fa0/0
+	 Ip add 10.0.0.1 255.255.255.0
+ 	 no shut
+Int fa0/1
+	ip add 20.0.0.1 255.255.255.0
+	no shut
+Int lo 1
+	ip add 11.11.11.11 255.255.255.0
+	ip route 22.22.22.0 255.255.255.0 10.0.0.2
+
+R2:
+Int fa 0/0
+	ip add 10.0.0.2 255.255.255.0
+	no shut
+Int fa 0/1
+	ip add 20.0.0.2 255.255.255.0
+	no shut
+Int lo 1
+	ip add 22.22.22.22 255.255.255.0
+ 	no shut
+Int fa 0/0
+	ip verify unicast source reachable-via-x
+	ip route 11.11.11.0 255.255.255.0 20.0.0.1
+
+SNMP v3 ASA 
+hostname ASA 
+int Gi0/0
+Ip add 10.0.0.2 255.255.255.0
+Name inside 
+No shut
+snmp-server group rat-security v3 priv
+snmp-server user admin 1st-security v3 auth she 123 
+Priv aes 128 123 
+snmp-server host inside 10.0.0.10 version 3 admin 
+Snap-server enable traps snmp linkdown linkup
